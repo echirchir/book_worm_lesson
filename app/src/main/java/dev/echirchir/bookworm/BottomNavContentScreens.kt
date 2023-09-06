@@ -3,6 +3,7 @@ package dev.echirchir.bookworm
 import android.widget.Space
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -28,12 +32,17 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -196,22 +205,70 @@ fun SubscribeButton() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(colorResource(id = R.color.teal_700))
-            .wrapContentSize(Alignment.Center)
+
+    val books = listOf(
+        R.drawable.img_2,
+        R.drawable.img_3,
+        R.drawable.img_1,
+        R.drawable.img,
+        R.drawable.img_3,
+        R.drawable.img_2,
+        R.drawable.img,
+        R.drawable.img_1,
+    )
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = "Books",
+                icon = Icons.Default.List,
+                background = Color.White
+            ){}
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .padding(paddingValues)
+        ) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier.padding(10.dp)
+            ) {
+                items(books.size) {
+                    BookItem(imageId = books[it], title = "Who Ate My Cheese")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun BookItem(imageId: Int, title: String) {
+    Card(
+        modifier = Modifier.padding(8.dp).size(150.dp).clickable {
+
+        },
+        elevation = CardDefaults.cardElevation()
     ) {
-        Text(
-            text = "My Library Screen",
-            fontWeight = FontWeight.Bold,
-            color = Color.White,
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            textAlign = TextAlign.Center,
-            fontSize = 20.sp
-        )
+        Column(
+            Modifier.padding(5.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Image(
+                painter = painterResource(id = imageId),
+                contentDescription = "",
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(5.dp),
+                contentScale = ContentScale.FillBounds
+            )
+        }
     }
 }
 
@@ -252,6 +309,7 @@ fun SettingsMainContent() {
         topBar = {
             TopAppBar(
                 title = "Settings",
+                icon = Icons.Default.Edit,
                 background = Color.White
             ){}
         }
@@ -322,6 +380,7 @@ fun TopAppBar(
     background: Color = Color.Unspecified,
     alignment: Alignment = Alignment.Center,
     title: String = "",
+    icon: ImageVector,
     onClick: () -> Unit
 ) {
     Surface(color = background) {
@@ -354,7 +413,7 @@ fun TopAppBar(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    imageVector = Icons.Default.Edit,
+                    imageVector = icon,
                     contentDescription = "",
                     tint = Color.Black
                 )
@@ -414,7 +473,9 @@ fun WalletAndOrders() {
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth().height(80.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(80.dp)
     ) {
         
         Column() {
@@ -434,7 +495,9 @@ fun WalletAndOrders() {
             )
         }
         
-        Divider(modifier = Modifier.fillMaxHeight().width(1.dp))
+        Divider(modifier = Modifier
+            .fillMaxHeight()
+            .width(1.dp))
         
         Column() {
             Text(
